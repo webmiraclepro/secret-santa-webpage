@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useSelector, useDispatch } from 'react-redux'
+import SelectMenu from '../../components/SelectMenu'
 import { RootState, AppDispatch } from '../../state/store';
 import { getPersons } from '../../state/person/reducer';
 import { getRules, addRule, removeRule, ruleSlice } from '../../state/rule/reducer';
@@ -44,53 +44,54 @@ export default function RulePage() {
     }
     return (
         <div className='flex flex-col justify-center items-center'>
-            <p className='text-xl text-blue'>People on your list</p>
-            {
-                persons.map(({ id, name }) => {
-                    return (
-                        <p className='text-lg text-left'>
-                            {name}
-                        </p>
-                    )
-
-                })
-            }
+            <p className='text-xl text-blue-400'>People on your list</p>
+            <div className='text-left text-md text-blue-400'>
+                {
+                    persons.map(({ id, name }) => {
+                        return (
+                            <p>{name}</p>
+                        )
+                    })
+                }
+            </div>
             <Link href="/">
                 <button className='border rounded-lg bg-blue-400 text-white px-10 py-3 mt-10 items-center justify-center' onClick={() => { console.log("Edit list clicked") }}>
                     Edit list
                 </button>
             </Link>
+            <p className='text-xl text-blue-400 py-8'>Create rules</p>
 
             {
-                
                 rules.map(({ id, firstPerson, secondPerson, isVerca }, index) => {
                     return (
-                        <div className='flex flex-col my-5' key={id}>
-                            <p className="text-lg">Rule#{index + 1}</p>
+                        <div className='flex flex-col my-5 text-blue-400' key={id}>
+                            <p className="text-md py-2">Rule#{index + 1}</p>
                             <div className='flex flex-row items-center justify-between justify-center'>
                                 <TextField
                                     id="first people"
                                     select
+                                    color="info"
                                     value={firstPerson}
-                                    className="w-[200px]"
+                                    className="w-[200px] text-blue-400 rounded-lg bg-blue-100 color-blue-400 border-blue-400"
                                 >
                                     {persons.map(({ id, name }) => (
-                                        <MenuItem key={id} value={name}>
+                                        <MenuItem key={id} value={name} className="text-blue-400">
                                             {name}
                                         </MenuItem>
                                     ))}
                                 </TextField>
-                                <p className='mx-10'>can't give to</p>
+                                <span className='mx-8'>can't give to</span>
                                 <TextField
                                     id="second people"
                                     select
+                                    color="info"
                                     value={secondPerson}
-                                    className="w-[200px]"
+                                    className="w-[200px] bg-blue-100"
                                 >
                                     {persons.filter(function ({ id, name }) {
                                         return name !== firstPerson
                                     }).map(({ id, name }) => (
-                                        <MenuItem key={id} value={name}>
+                                        <MenuItem key={id} value={name} className="text-blue-400">
                                             {name}
                                         </MenuItem>
                                     ))}
@@ -100,47 +101,60 @@ export default function RulePage() {
                                     inputProps={{ 'aria-label': 'controlled' }}
                                     className="rounded-sm"
                                 />
-                                <p className='mx-2 '>and vice versa</p>
-                                <MinusCircleIcon className="cursor-pointer w-5 h-5 text-teal-500 ml-10" onClick={() => removeRuleRow(id)} />
+                                <p className='mr-2'>and vice versa</p>
+                                <MinusCircleIcon className="cursor-pointer w-5 h-5 text-blue-400 ml-8" onClick={() => removeRuleRow(id)} />
                             </div>
                         </div>
 
                     )
                 })
             }
-
-            <div className='flex flex-col my-5'>
-                <p className="text-lg">Rule#{rules.length + 1}</p>
+            
+            <div className='flex flex-col my-5 text-blue-400'>
+                <p className="text-md">Rule#{rules.length + 1}</p>
                 <div className='flex flex-row items-center justify-between justify-center'>
                     <TextField
                         id="first people"
                         select
                         value={people1}
                         onChange={handleChange1}
-                        className="w-[200px]"
+                        color="info"
+                        className="w-[200px] bg-blue-100 text-blue-400"
                     >
                         {persons.map(({ id, name }) => (
-                            <MenuItem key={id} value={name}>
+                            <MenuItem key={id} value={name} className="text-blue-400">
                                 {name}
                             </MenuItem>
                         ))}
                     </TextField>
-                    <p className='mx-10'>can't give to</p>
+                    <p className='mx-8'>can't give to</p>
                     <TextField
                         id="second people"
                         select
+                        color="info"
                         value={people2}
                         onChange={handleChange2}
-                        className="w-[200px]"
+                        className="w-[200px] bg-blue-100 text-blue-400"
                     >
                         {persons.filter(function ({ id, name }) {
                             return name !== people1
-                        }).map(({ id, name }) => (
-                            <MenuItem key={id} value={name}>
+                        }).map(({ id, name }) => 
+                            <MenuItem key={id} value={name} className="text-blue-400">
                                 {name}
                             </MenuItem>
-                        ))}
+                        )}
                     </TextField>
+                    
+                    {/* <select className='border border-blue-400 bg-blue-50 px-8 py-4 rounded-md'>
+                        {
+                            persons.filter(function({id, name}) {
+                                return name !== people1
+                            }).map(({id, name}) => <option className='py-4' key={id} value={name}>{name}</option>
+                                
+                            )
+                        }
+                    </select> */}
+                    {/* <SelectMenu people={persons}/> */}
                     <Checkbox
                         checked={checked}
                         onChange={handleChange}
@@ -148,7 +162,7 @@ export default function RulePage() {
                         className="rounded-sm"
                     />
                     <p className='mx-2 '>and vice versa</p>
-                    <PlusCircleIcon className="cursor-pointer w-5 h-5 text-teal-500 ml-10" onClick={addRuleRow} />
+                    <PlusCircleIcon className="cursor-pointer w-5 h-5 text-blue-400 ml-8" onClick={addRuleRow} />
                 </div>
             </div>
 
