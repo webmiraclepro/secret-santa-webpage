@@ -28,7 +28,7 @@ export default function HomePage() {
                     persons.map(({ id, name }, index) => {
                         return (
                             <div className='flex flex-col my-5 text-blue-400' key={id}>
-                                <p className="text-lg">Person#{index + 1}</p>
+                                <p className="text-md py-2">Person#{index + 1}</p>
                                 <div className='flex flex-row items-center justify-between justify-center'>
                                     <input type="text" className="rounded-lg border border-blue-400 bg-blue-50 p-3" value={name} />
                                     <MinusCircleIcon className="cursor-pointer w-5 h-5 text-blue-400" onClick={() => removeUser(id)} />

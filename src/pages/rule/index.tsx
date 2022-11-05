@@ -9,6 +9,32 @@ import SelectMenu from '../../components/SelectMenu'
 import { RootState, AppDispatch } from '../../state/store';
 import { getPersons } from '../../state/person/reducer';
 import { getRules, addRule, removeRule, ruleSlice } from '../../state/rule/reducer';
+import { alpha, styled } from '@mui/material/styles';
+import { builtinModules } from 'module';
+import { blue } from '@mui/material/colors';
+
+
+const CssTextField = styled(TextField)({
+    '& label.Mui-focused': {
+      color: '#60a5fa',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#60a5fa',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#60a5fa',
+      },
+      '&:hover fieldset': {
+        borderColor: '#60a5fa',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#60a5fa',
+        borderRadius: '10px'
+      },
+    },
+  });
+  
 
 export default function RulePage() {
     const dispatch = useDispatch<AppDispatch>();
@@ -67,11 +93,12 @@ export default function RulePage() {
                         <div className='flex flex-col my-5 text-blue-400' key={id}>
                             <p className="text-md py-2">Rule#{index + 1}</p>
                             <div className='flex flex-row items-center justify-between justify-center'>
-                                <TextField
+                                <CssTextField
                                     id="first people"
                                     select
                                     color="info"
                                     value={firstPerson}
+                                    inputProps={{sx: {color: '#60a5fa'}}}
                                     className="w-[200px] text-blue-400 rounded-lg bg-blue-100 color-blue-400 border-blue-400"
                                 >
                                     {persons.map(({ id, name }) => (
@@ -79,14 +106,15 @@ export default function RulePage() {
                                             {name}
                                         </MenuItem>
                                     ))}
-                                </TextField>
+                                </CssTextField>
                                 <span className='mx-8'>can't give to</span>
-                                <TextField
+                                <CssTextField
                                     id="second people"
                                     select
                                     color="info"
                                     value={secondPerson}
                                     className="w-[200px] bg-blue-100"
+                                    inputProps={{sx: {color: '#60a5fa'}}}
                                 >
                                     {persons.filter(function ({ id, name }) {
                                         return name !== firstPerson
@@ -95,7 +123,7 @@ export default function RulePage() {
                                             {name}
                                         </MenuItem>
                                     ))}
-                                </TextField>
+                                </CssTextField>
                                 <Checkbox
                                     checked={isVerca}
                                     inputProps={{ 'aria-label': 'controlled' }}
@@ -113,28 +141,30 @@ export default function RulePage() {
             <div className='flex flex-col my-5 text-blue-400'>
                 <p className="text-md">Rule#{rules.length + 1}</p>
                 <div className='flex flex-row items-center justify-between justify-center'>
-                    <TextField
+                    <CssTextField
                         id="first people"
                         select
                         value={people1}
                         onChange={handleChange1}
                         color="info"
                         className="w-[200px] bg-blue-100 text-blue-400"
+                        inputProps={{sx: {color: '#60a5fa'}}}
                     >
                         {persons.map(({ id, name }) => (
                             <MenuItem key={id} value={name} className="text-blue-400">
                                 {name}
                             </MenuItem>
                         ))}
-                    </TextField>
+                    </CssTextField>
                     <p className='mx-8'>can't give to</p>
-                    <TextField
+                    <CssTextField
                         id="second people"
                         select
                         color="info"
                         value={people2}
                         onChange={handleChange2}
                         className="w-[200px] bg-blue-100 text-blue-400"
+                        inputProps={{sx: {color: '#60a5fa'}}}
                     >
                         {persons.filter(function ({ id, name }) {
                             return name !== people1
@@ -143,17 +173,8 @@ export default function RulePage() {
                                 {name}
                             </MenuItem>
                         )}
-                    </TextField>
+                    </CssTextField>
                     
-                    {/* <select className='border border-blue-400 bg-blue-50 px-8 py-4 rounded-md'>
-                        {
-                            persons.filter(function({id, name}) {
-                                return name !== people1
-                            }).map(({id, name}) => <option className='py-4' key={id} value={name}>{name}</option>
-                                
-                            )
-                        }
-                    </select> */}
                     {/* <SelectMenu people={persons}/> */}
                     <Checkbox
                         checked={checked}
