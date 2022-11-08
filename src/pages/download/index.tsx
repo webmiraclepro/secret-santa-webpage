@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useSelector, useDispatch } from 'react-redux'
 import { saveAs } from 'file-saver';
-import JSZip, { file } from 'jszip';
+import JSZip from 'jszip';
 import { getRules } from '../../state/rule/reducer'
 import { getPersons } from '../../state/person/reducer';
 import { RootState, AppDispatch } from '../../state/store'
@@ -12,18 +12,35 @@ const DownloadPage = () => {
     const persons = useSelector(({ people }: RootState) => getPersons(people.persons))
     const downloadFile = () => {
         const zip = new JSZip()
+        let map = new Map<string, Array<string>>();
         rules.map(({ firstPerson, secondPerson, isVerca }, index) => {
-            let result: string = ""
-            persons.filter(function ({ id, name }) {
-                return name !== secondPerson
-            }).map(({ id, name }) => {
-                const fileContent = firstPerson + ", you are giving a present to " + name + ".\n";
-                result += fileContent
-            })
-            // result = firstPerson + " can't give to " + secondPerson + `${isVerca ? " and vice versa." : "."}`
-            const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
-            zip.file(`${firstPerson}.txt`, blob);
+            let arr = map.get(firstPerson) as Array<string>
+            if (!arr) arr = []
+            arr.push(secondPerson)
+            map.set(firstPerson, arr)
+            if (isVerca) {
+                arr = map.get(secondPerson) as Array<string>
+                if (!arr) arr = []
+                arr.push(firstPerson)
+                map.set(secondPerson, arr)
+            }
         })
+
+        for (const { name } of persons) {
+            const relation = map.get(name) as Array<string> ?? []
+            relation.push(name)
+            const canGive = persons.filter((person) => {
+                return !relation.includes(person.name)
+            })
+            let result = name + ", you are giving a present to "
+            canGive.map(({ name }, id) => {
+                if (id) result += ","
+                result += name
+            })
+            result += '.'
+            const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+            zip.file(`${name}.txt`, blob);
+        }
         zip.generateAsync({ type: "blob" }).then(function (content) {
             // see FileSaver.js
             saveAs(content, "secretsanta.zip");

@@ -10,33 +10,30 @@ import { RootState, AppDispatch } from '../../state/store';
 import { getPersons } from '../../state/person/reducer';
 import { getRules, addRule, removeRule, ruleSlice } from '../../state/rule/reducer';
 import { alpha, styled } from '@mui/material/styles';
-import { builtinModules } from 'module';
-import { blue } from '@mui/material/colors';
-
 
 const CssTextField = styled(TextField)({
     '& label.Mui-focused': {
-      color: '#60a5fa',
+        color: '#60a5fa',
     },
     '& .MuiInput-underline:after': {
-      borderBottomColor: '#60a5fa',
+        borderBottomColor: '#60a5fa',
     },
     '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#60a5fa',
-      },
-      '&:hover fieldset': {
-        borderColor: '#60a5fa',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#60a5fa',
-        borderRadius: '10px'
-      },
+        '& fieldset': {
+            borderColor: '#60a5fa',
+        },
+        '&:hover fieldset': {
+            borderColor: '#60a5fa',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#60a5fa',
+            borderRadius: '10px'
+        },
     },
-  });
-  
+});
 
 export default function RulePage() {
+
     const dispatch = useDispatch<AppDispatch>();
     const persons = useSelector(({ people }: RootState) => getPersons(people.persons))
     const rules = useSelector(({ rule }: RootState) => getRules(rule.rules))
@@ -48,7 +45,6 @@ export default function RulePage() {
         setChecked(event.target.checked);
     };
 
-
     const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPeople1(event.target.value);
     };
@@ -56,7 +52,6 @@ export default function RulePage() {
     const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPeople2(event.target.value);
     };
-
 
     const addRuleRow = () => {
         dispatch(addRule({ people1, people2, checked }))
@@ -68,6 +63,7 @@ export default function RulePage() {
     const removeRuleRow = (id: string) => {
         dispatch(removeRule(id))
     }
+
     return (
         <div className='flex flex-col justify-center items-center'>
             <p className='text-xl text-blue-400'>People on your list</p>
@@ -86,7 +82,6 @@ export default function RulePage() {
                 </button>
             </Link>
             <p className='text-xl text-blue-400 py-8'>Create rules</p>
-
             {
                 rules.map(({ id, firstPerson, secondPerson, isVerca }, index) => {
                     return (
@@ -98,7 +93,7 @@ export default function RulePage() {
                                     select
                                     color="info"
                                     value={firstPerson}
-                                    inputProps={{sx: {color: '#60a5fa'}}}
+                                    inputProps={{ sx: { color: '#60a5fa' } }}
                                     className="w-[200px] text-blue-400 rounded-lg bg-blue-100 color-blue-400 border-blue-400"
                                 >
                                     {persons.map(({ id, name }) => (
@@ -114,7 +109,7 @@ export default function RulePage() {
                                     color="info"
                                     value={secondPerson}
                                     className="w-[200px] bg-blue-100"
-                                    inputProps={{sx: {color: '#60a5fa'}}}
+                                    inputProps={{ sx: { color: '#60a5fa' } }}
                                 >
                                     {persons.filter(function ({ id, name }) {
                                         return name !== firstPerson
@@ -133,11 +128,10 @@ export default function RulePage() {
                                 <MinusCircleIcon className="cursor-pointer w-5 h-5 text-blue-400 ml-8" onClick={() => removeRuleRow(id)} />
                             </div>
                         </div>
-
                     )
                 })
             }
-            
+
             <div className='flex flex-col my-5 text-blue-400'>
                 <p className="text-md">Rule#{rules.length + 1}</p>
                 <div className='flex flex-row items-center justify-between justify-center'>
@@ -147,8 +141,8 @@ export default function RulePage() {
                         value={people1}
                         onChange={handleChange1}
                         color="info"
-                        className="w-[200px] bg-blue-100 text-blue-400"
-                        inputProps={{sx: {color: '#60a5fa'}}}
+                        className="w-[200px] bg-green-100 text-blue-400"
+                        inputProps={{ sx: { color: '#60a5fa' } }}
                     >
                         {persons.map(({ id, name }) => (
                             <MenuItem key={id} value={name} className="text-blue-400">
@@ -163,19 +157,18 @@ export default function RulePage() {
                         color="info"
                         value={people2}
                         onChange={handleChange2}
-                        className="w-[200px] bg-blue-100 text-blue-400"
-                        inputProps={{sx: {color: '#60a5fa'}}}
+                        className="w-[200px] bg-green-100 text-blue-400"
+                        inputProps={{ sx: { color: '#60a5fa' } }}
                     >
                         {persons.filter(function ({ id, name }) {
                             return name !== people1
-                        }).map(({ id, name }) => 
+                        }).map(({ id, name }) =>
                             <MenuItem key={id} value={name} className="text-blue-400">
                                 {name}
                             </MenuItem>
                         )}
                     </CssTextField>
-                    
-                    {/* <SelectMenu people={persons}/> */}
+
                     <Checkbox
                         checked={checked}
                         onChange={handleChange}
