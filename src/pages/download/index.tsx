@@ -29,7 +29,6 @@ const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string
         }
     }
     if (allReceived) {
-        console.log(relation)
         answer = JSON.parse(JSON.stringify(Array.from(relation)));
         return;
     }
@@ -101,7 +100,6 @@ const DownloadPage = () => {
                 saveAs(content, "secretsanta.zip");
             });
         } else {
-            console.log("no answer")
             alert("No output, please make rules again")
         }
 
