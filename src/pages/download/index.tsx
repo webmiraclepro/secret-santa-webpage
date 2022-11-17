@@ -29,6 +29,7 @@ const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string
         }
     }
     if (allReceived) {
+        console.log(relation)
         answer = JSON.parse(JSON.stringify(Array.from(relation)));
         return;
     }
@@ -85,18 +86,24 @@ const DownloadPage = () => {
 
         init(persons);
         dfs(persons, maptogive);
-        // console.log('relation', answer)
-        answer.forEach(e => {
-            const giver = e[0]
-            const receiver = e[1]
-            let result = giver + ", you are giving a present to " + receiver
-            const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
-            zip.file(`${giver}.txt`, blob);
-        })
-        zip.generateAsync({ type: "blob" }).then(function (content) {
-            // see FileSaver.js
-            saveAs(content, "secretsanta.zip");
-        });
+        // console.log('relation', answer, maptogive)
+        if(!!answer.size) {
+
+            answer.forEach(e => {
+                const giver = e[0]
+                const receiver = e[1]
+                let result = giver + ", you are giving a present to " + receiver
+                const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+                zip.file(`${giver}.txt`, blob);
+            })
+            zip.generateAsync({ type: "blob" }).then(function (content) {
+                // see FileSaver.js
+                saveAs(content, "secretsanta.zip");
+            });
+        } else {
+            console.log("no answer")
+            alert("No output, please make rules again")
+        }
 
     }
 
