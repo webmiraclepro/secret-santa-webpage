@@ -20,36 +20,22 @@ const init = (persons: Array<{ id: string, name: string }>) => {
     }
 }
 
-const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string, Array<string>>) => {
-    let allReceived = true;
-    for (const { name } of persons) {
-        if (received.get(name) == false) {
-            allReceived = false;
-            break;
-        }
-    }
-    if (allReceived) {
+const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string, Array<string>>, index = 0) => {
+    if(index === persons.length) {
         answer = JSON.parse(JSON.stringify(Array.from(relation)));
-        return;
+        return true;
     }
-
-    for (const { name: nameToGive } of persons) {
-        if (given.get(nameToGive)) continue;
-
-        for (const { name: nameToReceive } of persons) {
-            if (received.get(nameToReceive)) continue;
-            if (maptogive.get(nameToGive)?.includes(nameToReceive) && relation.get(nameToReceive) !== nameToGive) {
-                received.set(nameToReceive, true);
-                given.set(nameToGive, true);
-                relation.set(nameToGive, nameToReceive);
-                dfs(persons, maptogive);
-                received.set(nameToReceive, false);
-                given.set(nameToGive, false);
-                relation.set(nameToGive, '');
-            }
-        }
-
+    const nameToGive = persons[index].name ?? "";
+    const adj = maptogive.get(nameToGive) ?? [];
+    for(const nameToReceive of adj) {
+        if (received.get(nameToReceive)) continue;
+        relation.set(nameToGive, nameToReceive);
+        received.set(nameToReceive, true);
+        if(dfs(persons, maptogive, index+1)) return true;
+        relation.set(nameToGive, '');
+        received.set(nameToReceive, false);
     }
+    return false;
 }
 
 const DownloadPage = () => {
@@ -82,11 +68,11 @@ const DownloadPage = () => {
             canGive.map(e => arr.push(e.name))
             maptogive.set(name, arr);
         }
-
+      
         init(persons);
         dfs(persons, maptogive);
-        // console.log('relation', answer, maptogive)
-        if(!!answer.size) {
+
+        if(!!answer.entries) {
 
             answer.forEach(e => {
                 const giver = e[0]
