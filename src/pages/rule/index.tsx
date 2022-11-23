@@ -54,6 +54,10 @@ export default function RulePage() {
     };
 
     const addRuleRow = () => {
+        if (!people1 || !people2) {
+            alert("Please select giver and receiver.")
+            return
+        }
         dispatch(addRule({ people1, people2, checked }))
         setPeople1("")
         setPeople2("")
