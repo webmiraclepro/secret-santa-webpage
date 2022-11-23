@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/react/24/outline'
 import { RootState, AppDispatch } from '../../state/store';
 import { addPerson, removePerson, getPersons } from '../../state/person/reducer';
+import { clearRules } from "../../state/rule/reducer";
 
 export default function HomePage() {
 
@@ -49,6 +50,7 @@ export default function HomePage() {
             alert("Please add over 3 people to the list to go to next page")
             return
         }
+        dispatch(clearRules())
         router.push('/rule')
     }
 

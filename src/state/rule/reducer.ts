@@ -31,9 +31,12 @@ export const ruleSlice = createSlice({
         removeRule: (state, action) => {
             rulesAdapter.removeOne(state.rules, action.payload);
         },
+        clearRules: (state) => {
+            rulesAdapter.removeAll(state.rules)
+        }
     },
 })
 
-export const { addRule, removeRule } = ruleSlice.actions;
+export const { addRule, removeRule, clearRules } = ruleSlice.actions;
 
 export default ruleSlice.reducer
