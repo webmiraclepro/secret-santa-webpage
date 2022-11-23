@@ -5,12 +5,21 @@ import JSZip, { forEach } from 'jszip';
 import { getRules } from '../../state/rule/reducer'
 import { getPersons } from '../../state/person/reducer';
 import { RootState, AppDispatch } from '../../state/store'
+import { getModeForResolutionAtIndex } from 'typescript';
 
 const received = new Map<string, Boolean>();
 const given = new Map<string, Boolean>();
 const relation = new Map<string, string>();
 let answer = new Map<string, string>();
 
+function shuffleArray(array:Array<string>) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
 
 const init = (persons: Array<{ id: string, name: string }>) => {
     for (const { name } of persons) {
@@ -27,6 +36,7 @@ const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string
     }
     const nameToGive = persons[index].name ?? "";
     const adj = maptogive.get(nameToGive) ?? [];
+    shuffleArray(adj)
     for(const nameToReceive of adj) {
         if (received.get(nameToReceive)) continue;
         relation.set(nameToGive, nameToReceive);
@@ -68,12 +78,12 @@ const DownloadPage = () => {
             canGive.map(e => arr.push(e.name))
             maptogive.set(name, arr);
         }
-      
         init(persons);
-        dfs(persons, maptogive);
+        let getSolution = dfs(persons, maptogive);
+            
+        console.log("answer", answer, getSolution)
 
-        if(!!answer.entries) {
-
+        if(getSolution) {
             answer.forEach(e => {
                 const giver = e[0]
                 const receiver = e[1]
