@@ -5,11 +5,10 @@ import JSZip, { forEach } from 'jszip';
 import { getRules } from '../../state/rule/reducer'
 import { getPersons } from '../../state/person/reducer';
 import { RootState, AppDispatch } from '../../state/store'
-import { getModeForResolutionAtIndex } from 'typescript';
 
-const received = new Map<string, Boolean>();
-const given = new Map<string, Boolean>();
-const relation = new Map<string, string>();
+let received = new Map<string, Boolean>();
+let given = new Map<string, Boolean>();
+let relation = new Map<string, string>();
 let answer = new Map<string, string>();
 
 function shuffleArray(array:Array<string>) {
@@ -21,12 +20,10 @@ function shuffleArray(array:Array<string>) {
     }
 }
 
-const init = (persons: Array<{ id: string, name: string }>) => {
-    for (const { name } of persons) {
-        received.set(name, false);
-        given.set(name, false);
-        relation.set(name, '');
-    }
+const init = () => {
+    received = new Map<string, Boolean>();
+    given = new Map<string, Boolean>();
+    relation = new Map<string, string>();
 }
 
 const dfs = (persons: Array<{ id: string, name: string }>, maptogive: Map<string, Array<string>>, index = 0) => {
@@ -55,8 +52,7 @@ const DownloadPage = () => {
         const zip = new JSZip()
         let map = new Map<string, Array<string>>();
         rules.map(({ firstPerson, secondPerson, isVerca }, index) => {
-            let arr = map.get(firstPerson) as Array<string>
-            if (!arr) arr = []
+            let arr = map.get(firstPerson) as Array<string> ?? []
             arr.push(secondPerson)
             map.set(firstPerson, arr)
             if (isVerca) {
@@ -73,16 +69,13 @@ const DownloadPage = () => {
             const canGive = persons.filter((person) => {
                 return !relation.includes(person.name)
             })
-            let arr = maptogive.get(name) as Array<string>
-            if (!arr) arr = []
+            let arr = maptogive.get(name) as Array<string> ?? []
             canGive.map(e => arr.push(e.name))
             maptogive.set(name, arr);
         }
-        init(persons);
+        init();
         let getSolution = dfs(persons, maptogive);
             
-        console.log("answer", answer, getSolution)
-
         if(getSolution) {
             answer.forEach(e => {
                 const giver = e[0]
@@ -98,7 +91,6 @@ const DownloadPage = () => {
         } else {
             alert("No output, please make rules again")
         }
-
     }
 
     return (
